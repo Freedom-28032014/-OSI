@@ -5,28 +5,21 @@ import java.io.PrintWriter;
 import java.net.*;
 
 public class Client {
-    public static void main(String[] args) throws IOException {
-        String host = "localhost";
 
-        InetAddress addr = InetAddress.getByName(host);
-        Socket clientSocket = new Socket(addr, Server.port);
+    private static final int PORT = 8080;
+    private static final String HOST = "localhost";
 
-        try {
-            PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
-            BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-            System.out.println("New connected accepted");
+    public static void main(String[] args) {
 
-            out.println("dude");
-            String name = in.readLine();
-            System.out.println(name);
+        try (Socket clientSocket = new Socket(HOST, PORT);
+             PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
+             BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()))) {
+            out.println("Client");
+            System.out.println(in.readLine());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
 
-            out.println("end");
-            out.flush();
-            clientSocket.setSoTimeout(3000);
 
-        } finally {
-            System.out.println("close");
-            clientSocket.close();
         }
     }
 }
